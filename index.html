@@ -28,7 +28,11 @@
 
     <main class="main-area" id="main">
       <div class="deck-header">
-        <h2 id="current-deck-title">Biology</h2>
+        <div class="deck-title-actions">
+          <h2 id="current-deck-title">Biology</h2>
+          <button id="btn-delete-deck" type="button" class="btn-secondary">Delete Deck</button>
+        </div>
+
         <div class="toolbar">
           <input type="search" id="search-bar" placeholder="Search cards..." aria-label="Search current deck">
           <button type="button" id="btn-shuffle" aria-label="Shuffle cards">Shuffle</button>
@@ -50,6 +54,8 @@
 
         <div class="card-controls">
           <button id="btn-prev" type="button" aria-label="Previous card">← Prev</button>
+          <button id="btn-edit" type="button" class="btn-secondary">Edit</button>
+          <button id="btn-delete-card" type="button" class="btn-secondary">Delete</button>
           <button id="btn-flip" type="button">Flip</button>
           <button id="btn-next" type="button" aria-label="Next card">Next →</button>
         </div>
@@ -64,6 +70,32 @@
       <p><kbd>Space</kbd> to flip &bull; <kbd>←</kbd> <kbd>→</kbd> to navigate</p>
     </div>
   </footer>
+
+  <dialog id="modal-new-deck" aria-labelledby="modal-new-deck-title">
+    <form method="dialog" id="form-new-deck">
+      <h3 id="modal-new-deck-title">Create New Deck</h3>
+      <label for="input-new-deck">Deck Name</label>
+      <input id="input-new-deck" name="deckName" required />
+      <div class="dialog-actions">
+        <button id="btn-cancel-deck" type="reset">Cancel</button>
+        <button type="submit" class="btn-primary">Create</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="modal-new-card" aria-labelledby="modal-new-card-title">
+    <form method="dialog" id="form-new-card">
+      <h3 id="modal-new-card-title">Add Card</h3>
+      <label for="input-card-front">Front</label>
+      <input id="input-card-front" name="front" required />
+      <label for="input-card-back">Back</label>
+      <textarea id="input-card-back" name="back" rows="3"></textarea>
+      <div class="dialog-actions">
+        <button id="btn-cancel-card" type="reset">Cancel</button>
+        <button type="submit" class="btn-primary">Add</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="app.js" defer></script>
 </body>

@@ -2,7 +2,7 @@
 // State: { decks: [], activeDeckId: null, searchTerm: '' }
 const STORAGE_KEY = 'flashcards-app-state-v1';
 const AppState = { decks: [], activeDeckId: null, searchTerm: '' };
-const UI = { filteredCards: [], currentIndex: 0 };
+const UI = { filteredCards: [], currentIndex: 0, editingCardId: null };
 
 /* Helpers */
 const uid = (prefix = '') => prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -187,12 +187,23 @@ function wireControls() {
 
   // Deck list handled in renderSidebar via per-button listeners
 
-  // New deck
+  // New deck (using <dialog>)
   const btnNewDeck = document.getElementById('btn-new-deck');
-  if (btnNewDeck) {
+  const modalNewDeck = document.getElementById('modal-new-deck');
+  const formNewDeck = document.getElementById('form-new-deck');
+  const inputNewDeck = document.getElementById('input-new-deck');
+  if (btnNewDeck && modalNewDeck && formNewDeck && inputNewDeck) {
     btnNewDeck.addEventListener('click', () => {
-      const title = prompt('New deck title:', 'New Deck') || 'New Deck';
-      const newDeck = { id: uid('deck_'), title, cards: [], createdAt: Date.now() };
+      inputNewDeck.value = '';
+      modalNewDeck.showModal();
+      inputNewDeck.focus();
+    });
+    formNewDeck.addEventListener('submit', (e) => {
+      // form submit happens only when the form is submitted (not on cancel)
+      e.preventDefault();
+      const name = inputNewDeck.value.trim();
+      if (!name) return; // required will prevent submission in supporting browsers
+      const newDeck = { id: uid('deck_'), title: name, cards: [], createdAt: Date.now() };
       AppState.decks.push(newDeck);
       AppState.activeDeckId = newDeck.id;
       AppState.searchTerm = '';
@@ -201,7 +212,18 @@ function wireControls() {
       saveState();
       renderSidebar();
       renderMain();
+      // close the dialog after creating
+      modalNewDeck.close();
     });
+
+    // Cancel button should explicitly close dialog and not trigger submit
+    const btnCancelDeck = document.getElementById('btn-cancel-deck');
+    if (btnCancelDeck) {
+      btnCancelDeck.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        modalNewDeck.close();
+      });
+    }
   }
 
   // Shuffle
@@ -215,17 +237,124 @@ function wireControls() {
     renderMain();
   });
 
-  // New card
+  // Delete deck
+  const btnDeleteDeck = document.getElementById('btn-delete-deck');
+  if (btnDeleteDeck) {
+    btnDeleteDeck.addEventListener('click', () => {
+      const deck = AppState.decks.find(d => d.id === AppState.activeDeckId);
+      if (!deck) return;
+      const ok = confirm(`Delete deck "${deck.title}"? This cannot be undone.`);
+      if (!ok) return;
+      const idx = AppState.decks.findIndex(d => d.id === deck.id);
+      if (idx >= 0) AppState.decks.splice(idx, 1);
+      // select first available deck or none
+      AppState.activeDeckId = AppState.decks[0] ? AppState.decks[0].id : null;
+      AppState.searchTerm = '';
+      const s = document.getElementById('search-bar'); if (s) s.value = '';
+      UI.currentIndex = 0;
+      saveState();
+      renderSidebar();
+      renderMain();
+    });
+  }
+
+  // New card (using <dialog>)
   const btnNewCard = document.getElementById('btn-new-card');
-  if (btnNewCard) btnNewCard.addEventListener('click', () => {
-    const deck = AppState.decks.find(d => d.id === AppState.activeDeckId);
-    if (!deck) return alert('No active deck');
-    const front = prompt('Card front:', 'New question') || 'New question';
-    const back = prompt('Card back:', '') || '';
-    deck.cards.push({ id: uid('card_'), front, back });
-    saveState();
-    renderMain();
-  });
+  const modalNewCard = document.getElementById('modal-new-card');
+  const formNewCard = document.getElementById('form-new-card');
+  const inputCardFront = document.getElementById('input-card-front');
+  const inputCardBack = document.getElementById('input-card-back');
+  const btnEdit = document.getElementById('btn-edit');
+  const btnDeleteCard = document.getElementById('btn-delete-card');
+  if (btnNewCard && modalNewCard && formNewCard && inputCardFront && inputCardBack) {
+    // Open modal for creating a new card
+    btnNewCard.addEventListener('click', () => {
+      const deck = AppState.decks.find(d => d.id === AppState.activeDeckId);
+      if (!deck) return alert('No active deck');
+      UI.editingCardId = null; // ensure we're not in edit mode
+      inputCardFront.value = '';
+      inputCardBack.value = '';
+      modalNewCard.showModal();
+      inputCardFront.focus();
+    });
+
+    // Submit handler supports both creating and editing
+    formNewCard.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const deck = AppState.decks.find(d => d.id === AppState.activeDeckId);
+      if (!deck) return;
+      const front = inputCardFront.value.trim() || 'New question';
+      const back = inputCardBack.value.trim() || '';
+
+      if (UI.editingCardId) {
+        // Edit existing card
+        const card = deck.cards.find(c => c.id === UI.editingCardId);
+        if (card) {
+          card.front = front;
+          card.back = back;
+        }
+        UI.editingCardId = null;
+      } else {
+        // Create new card
+        deck.cards.push({ id: uid('card_'), front, back });
+      }
+
+      saveState();
+      renderMain();
+      // close dialog after action
+      modalNewCard.close();
+    });
+
+    // Cancel button should explicitly close dialog and not trigger submit
+    const btnCancelCard = document.getElementById('btn-cancel-card');
+    if (btnCancelCard) {
+      btnCancelCard.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        // clear editing flag when cancelling
+        UI.editingCardId = null;
+        modalNewCard.close();
+      });
+    }
+
+    // When modal closes by any means, clear editing state and inputs
+    modalNewCard.addEventListener('close', () => {
+      UI.editingCardId = null;
+      if (inputCardFront) inputCardFront.value = '';
+      if (inputCardBack) inputCardBack.value = '';
+    });
+
+    // Edit current card
+    if (btnEdit) {
+      btnEdit.addEventListener('click', () => {
+        if (UI.filteredCards.length === 0) return;
+        const card = UI.filteredCards[UI.currentIndex];
+        if (!card) return;
+        UI.editingCardId = card.id;
+        inputCardFront.value = card.front;
+        inputCardBack.value = card.back;
+        modalNewCard.showModal();
+        inputCardFront.focus();
+      });
+    }
+
+    // Delete current card
+    if (btnDeleteCard) {
+      btnDeleteCard.addEventListener('click', () => {
+        if (UI.filteredCards.length === 0) return;
+        const card = UI.filteredCards[UI.currentIndex];
+        if (!card) return;
+        if (!confirm('Delete this card?')) return;
+        const deck = AppState.decks.find(d => d.id === AppState.activeDeckId);
+        if (!deck) return;
+        const idx = deck.cards.findIndex(c => c.id === card.id);
+        if (idx >= 0) deck.cards.splice(idx, 1);
+        // adjust index
+        if (UI.currentIndex >= deck.cards.length) UI.currentIndex = Math.max(0, deck.cards.length - 1);
+        saveState();
+        renderMain();
+      });
+    }
+  }
 
   // Prev / Next / Flip
   const btnPrev = document.getElementById('btn-prev');
