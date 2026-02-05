@@ -1,7 +1,10 @@
+/* --- GLOBAL RESET & BASICS --- */
 *,
 *::before,
 *::after { box-sizing: border-box; }
+
 html, body { height: 100%; }
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -13,9 +16,11 @@ body {
   display: flex;
   flex-direction: column;
 }
+
 img { max-width: 100%; height: auto; display: block; }
 button { font: inherit; cursor: pointer; color: var(--text); }
 
+/* --- THEME VARIABLES (Light/Dark Mode) --- */
 :root {
   --bg: #f7fafc;
   --surface: #ffffff;
@@ -37,20 +42,19 @@ button { font: inherit; cursor: pointer; color: var(--text); }
     --focus: rgba(74,163,255,0.22);
     --card-shadow: 0 2px 6px rgba(2,6,23,0.6);
   }
+  /* Dark mode specific button tweaks */
   #btn-new-deck, .btn-primary, .card-controls .flip { color: var(--bg); }
   .btn-secondary,
   .card-controls button:not(.flip) { border: 1px solid var(--muted); }
+  
+  /* Make search bar visible in dark mode */
   #search-bar {
     border: 1px solid rgba(255, 255, 255, 0.3);
     background: rgba(0, 0, 0, 0.2);
   }
-  .card-actions-top button {
-    background: rgba(0, 0, 0, 0.6);
-    color: var(--text);
-    border-color: rgba(255,255,255,0.2);
-  }
 }
 
+/* --- HEADER & FOOTER --- */
 .site-header,
 .site-footer {
   background: var(--surface);
@@ -58,11 +62,25 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   border-top: 1px solid transparent;
   border-bottom: 1px solid rgba(0,0,0,0.04);
 }
+
 .site-header .container,
 .site-footer .container { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+
+/* Header Layout (Hamburger + Title + Button) */
 .header-layout { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.header-left { display: flex; align-items: center; gap: 0.75rem; }
 .site-header h1 { margin: 0; font-size: 1.25rem; }
+
+/* Footer Styling */
+.site-footer {
+  margin-top: auto; /* Pushes footer to bottom of card view */
+  width: 100%;
+  border-top: none;
+  background: transparent;
+}
 .site-footer p { margin: 0; text-align: center; color: var(--muted); font-size: 0.9rem; }
+
+/* --- BUTTON STYLES --- */
 #btn-new-deck, .btn-primary, .card-controls .flip {
   background: var(--accent);
   color: white;
@@ -72,8 +90,16 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   box-shadow: 0 1px 0 rgba(0,0,0,0.04);
 }
 #btn-new-deck:hover { filter: brightness(0.98); }
-.btn-secondary { background: transparent; border: 1px solid var(--muted); padding: 0.45rem 0.6rem; border-radius: 6px; }
 
+.btn-secondary { 
+  background: transparent; 
+  border: 1px solid var(--muted); 
+  padding: 0.45rem 0.6rem; 
+  border-radius: 6px; 
+}
+button:hover { filter: brightness(0.98); }
+
+/* --- MAIN LAYOUT (Grid) --- */
 .app-layout {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
@@ -83,6 +109,7 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   overflow: hidden;
 }
 
+/* --- SIDEBAR --- */
 .sidebar {
   background: var(--surface);
   padding: 1rem;
@@ -90,6 +117,8 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   overflow-y: auto;
 }
 .sidebar h2 { margin: 0 0 0.5rem 0; font-size: 1rem; }
+
+/* Deck List Items */
 .deck-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.25rem; }
 .deck-list li .deck-btn {
   display: block;
@@ -109,6 +138,7 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   border-left: 4px solid var(--accent);
 } 
 
+/* --- MAIN CONTENT AREA --- */
 .main-area {
   padding: 1rem;
   overflow-y: auto;
@@ -118,9 +148,10 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   gap: 1rem;
 }
 
+/* --- DECK HEADER (Title + Actions) --- */
 .deck-header {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Stacks Title on top of Buttons */
   align-items: center;
   justify-content: center;
   gap: 1rem;
@@ -130,6 +161,7 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   text-align: center;
 }
 
+/* Container for Title and Edit/Delete Buttons */
 .deck-actions {
   display: flex;
   flex-direction: column;
@@ -140,10 +172,8 @@ button { font: inherit; cursor: pointer; color: var(--text); }
 }
 .deck-actions h2 { margin: 0; }
 
-.deck-actions-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
+/* Edit/Delete Deck Buttons */
+.deck-actions-buttons { display: flex; gap: 0.5rem; }
 .deck-actions-buttons button {
   font-size: 0.85rem;
   padding: 0.35rem 0.75rem;
@@ -153,12 +183,13 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   border-radius: 6px;
 }
 
+/* Toolbar (Search, Shuffle, New Card) */
 .toolbar { display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap; width: 100%}
 
 #search-bar { 
   padding: 0.45rem 0.6rem; 
   border-radius: 6px; 
-  border: 1px solid rgba(0,0,0,0.3); 
+  border: 1px solid rgba(0,0,0,0.3); /* Ensure visible border */
   background: var(--surface); 
   color: var(--text);
   min-width: 250px;
@@ -166,8 +197,8 @@ button { font: inherit; cursor: pointer; color: var(--text); }
 }
 #search-bar:focus { box-shadow: 0 0 0 4px var(--focus); outline: none; }
 
+/* --- CARD VIEW & ANIMATION --- */
 .study-area { max-width: 840px; margin: 0 auto; }
-
 .card-container { perspective: 1000px; display: grid; place-items: center; }
 
 .card {
@@ -206,6 +237,12 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   .card-back { background: #161e2e; }
 }
 
+/* Card Controls (Prev/Next/Flip) */
+.card-controls { display: flex; gap: 0.5rem; margin-top: 0.75rem; align-items: center; }
+.card-controls button { padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid var(--muted); background: var(--surface); }
+.card-controls .flip { background: var(--accent); color: white; border: none; }
+
+/* --- CARD EDIT/DELETE BUTTONS (Top Right) --- */
 .card-actions-top {
   position: absolute;
   top: 10px;
@@ -215,39 +252,17 @@ button { font: inherit; cursor: pointer; color: var(--text); }
   gap: 0.5rem;
   backface-visibility: hidden;
 }
-.card-actions-top button {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 4px;
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  color: var(--text);
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
 
-.card-controls { display: flex; gap: 0.5rem; margin-top: 0.75rem; align-items: center; }
-.card-controls button { padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid var(--muted); background: var(--surface); }
-.card-controls .flip { background: var(--accent); color: white; border: none; }
-
+/* --- ACCESSIBILITY & FOCUS --- */
 :focus { outline: none; }
-:focus-visible { box-shadow: 0 0 0 4px var(--focus); border-radius: 6px; }
-
-button:focus-visible,
-a:focus-visible { box-shadow: 0 0 0 4px var(--focus); outline: none; }
-
-button:hover { filter: brightness(0.98); }
-
-@media (max-width: 768px) {
-  .app-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-  .sidebar { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.05); }
-  .card-view { padding-top: 0.25rem; }
-  .site-header .container, .site-footer .container { padding-left: 0.75rem; padding-right: 0.75rem; }
+:focus-visible, button:focus-visible, a:focus-visible { 
+  box-shadow: 0 0 0 4px var(--focus); 
+  border-radius: 6px; 
+  outline: none; 
 }
+.visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
 
+/* --- MODALS (DIALOGS) --- */
 dialog {
   border: none;
   border-radius: 10px;
@@ -276,12 +291,11 @@ dialog input, dialog textarea {
   color: var(--text);
 }
 dialog input:focus, dialog textarea:focus {
-  box-shadow: 0 0 0 4px var(--focus);
+  box-shadow: 0 0 0 4px var(--focus); 
   outline: none;
 }
-dialog .btn-primary { margin-left: 0.25rem; }
-dialog .btn-secondary { margin-left: 0.25rem; }
-
+/* Styling for Cancel/Submit buttons in dialogs */
+dialog .btn-primary, dialog .btn-secondary { margin-left: 0.25rem; }
 dialog button[type="reset"] {
   background: transparent;
   border: 1px solid var(--muted);
@@ -291,41 +305,7 @@ dialog button[type="reset"] {
   font-weight: 500;
 }
 
-.visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
-
-small, .muted { color: var(--muted); }
-#btn-shuffle {
-  background: var(--surface) !important;
-  color: var(--text) !important; /* Force dark text */
-  border: 1px solid var(--muted) !important;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-
-/* Force dark text on the white background bubbles */
-.card-actions-top button {
-  background: #ffffff !important; /* Force white background */
-  color: #0f1724 !important;     /* Force BLACK text (never white) */
-  border: 1px solid #cbd5e0 !important; /* Grey border */
-  opacity: 1 !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  #btn-shuffle {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    color: var(--text) !important; /* Light text on dark bg */
-  }
-  
-  .card-actions-top button {
-    background: #1e293b !important; /* Dark grey bg */
-    color: #e2e8f0 !important;      /* Light grey text */
-    border-color: rgba(255, 255, 255, 0.2) !important;
-  }
-}
-
+/* --- KEYBOARD SHORTCUT ICONS (Footer) --- */
 kbd {
   background-color: #eee;
   border-radius: 3px;
@@ -340,28 +320,21 @@ kbd {
   white-space: nowrap;
   font-family: monospace;
 }
-
-/* Dark mode adjustment for keys */
 @media (prefers-color-scheme: dark) {
-  kbd {
-    background-color: #333;
-    border-color: #555;
-    color: #eee;
-  }
+  kbd { background-color: #333; border-color: #555; color: #eee; }
 }
 
-.mobile-only { display: none; }
+/* --- MOBILE RESPONSIVENESS & HAMBURGER MENU --- */
+.mobile-only { display: none; } /* Hidden on desktop */
 
-/* Group the Title and Menu Button */
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-/* Mobile Styles (Max Width 768px) */
 @media (max-width: 768px) {
-  /* Show the button */
+  /* Layout: Stack columns vertically */
+  .app-layout {
+    display: block; 
+    position: relative;
+  }
+  
+  /* Show Hamburger Button */
   .mobile-only { 
     display: block; 
     font-size: 1.5rem;
@@ -369,32 +342,30 @@ kbd {
     background: transparent;
     border: none;
   }
-
-  /* Transform the Sidebar into a "Drawer" */
-  .app-layout {
-    display: block; /* Remove grid, stack everything */
-    position: relative;
-  }
-
+  
+  /* Mobile Sidebar (Drawer) */
   .sidebar {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     width: 280px;
-    z-index: 100; /* Sit on top of everything */
+    z-index: 100; /* On top of everything */
+    background: var(--surface); /* Ensure opaque background */
     box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-    transform: translateX(-100%); /* HIDE IT by pushing it off-screen */
-    transition: transform 0.3s ease;
     border-right: none;
+    
+    /* Animation: Slide In */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
 
-
+  /* When menu is open */
   .sidebar.open {
-    transform: translateX(0); /* Slide it back in */
+    transform: translateX(0);
   }
 
-
+  /* Dark Overlay for background */
   .sidebar-overlay {
     position: fixed;
     inset: 0;
@@ -408,27 +379,45 @@ kbd {
     opacity: 1;
     pointer-events: auto;
   }
+  
+  /* Padding tweaks for mobile */
+  .site-header .container, .site-footer .container { padding-left: 0.75rem; padding-right: 0.75rem; }
 }
 
-/* Fix the header layout */
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+/* --- EMERGENCY OVERRIDES (High Contrast) --- */
+/* Fixes issues where buttons might turn invisible/white */
+
+/* Shuffle Button: Dark text + border */
+#btn-shuffle {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--muted) !important;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-/* Hide the menu button on desktop (This is likely why it looks broken) */
-.mobile-only {
-  display: none;
+/* Card Edit/Delete Buttons: White bubbles with black text */
+.card-actions-top button {
+  background: #ffffff !important;
+  color: #0f1724 !important;
+  border: 1px solid #cbd5e0 !important;
+  opacity: 1 !important;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* Show it only on small screens */
-@media (max-width: 768px) {
-  .mobile-only {
-    display: block;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
+/* Dark Mode Overrides for these specific buttons */
+@media (prefers-color-scheme: dark) {
+  #btn-shuffle {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: var(--text) !important;
+  }
+  .card-actions-top button {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
   }
 }

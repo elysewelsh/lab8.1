@@ -464,11 +464,17 @@ function wireControls() {
     });
   }
 
-  // Toggle Menu on Button Click
+// Toggle Menu on Button Click
   if (btnMenu) {
+    // 1. Initialize the state (so screen readers know it starts closed)
+    btnMenu.setAttribute('aria-expanded', 'false');
+
     btnMenu.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
+      const isOpen = sidebar.classList.toggle('open');
       overlay.classList.toggle('active');
+      
+      // 2. Announce the new state (true/false) whenever clicked
+      btnMenu.setAttribute('aria-expanded', isOpen);
     });
   }
 
@@ -480,6 +486,9 @@ function wireControls() {
       if (e.target.closest('button')) {
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
+        
+        // 3. Reset the state to "false" when it auto-closes
+        if (btnMenu) btnMenu.setAttribute('aria-expanded', 'false');
       }
     });
   }
