@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flashcards App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-layout">
+      <h1>Flashcards</h1>
+      <button id="btn-new-deck" class="btn-primary">+ New Deck</button>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" aria-label="Deck list">
+      <nav>
+        <h2>Decks</h2>
+        <ul class="deck-list" id="deck-list">
+          <li><button type="button" class="deck-btn active" aria-current="true">Biology</button></li>
+          <li><button type="button" class="deck-btn">Spanish</button></li>
+          <li><button type="button" class="deck-btn">History</button></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-area" id="main">
+      <div class="deck-header">
+        <h2 id="current-deck-title">Biology</h2>
+        <div class="toolbar">
+          <input type="search" id="search-bar" placeholder="Search cards..." aria-label="Search current deck">
+          <button type="button" id="btn-shuffle" aria-label="Shuffle cards">Shuffle</button>
+          <button type="button" id="btn-new-card" class="btn-secondary">+ New Card</button>
+        </div>
+      </div>
+
+      <section class="study-area" aria-live="polite">
+        <div class="card-container">
+          <article class="card" id="current-card">
+            <div class="card-face card-front">
+              <p>What is photosynthesis?</p>
+            </div>
+            <div class="card-face card-back">
+              <p>The process by which green plants use sunlight to synthesize foods.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="card-controls">
+          <button id="btn-prev" type="button" aria-label="Previous card">← Prev</button>
+          <button id="btn-flip" type="button">Flip</button>
+          <button id="btn-next" type="button" aria-label="Next card">Next →</button>
+        </div>
+        
+        <div class="card-progress" aria-hidden="true">Card 1 of 10</div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><kbd>Space</kbd> to flip &bull; <kbd>←</kbd> <kbd>→</kbd> to navigate</p>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
