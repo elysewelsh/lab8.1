@@ -7,12 +7,16 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="site-header">
+    <header class="site-header">
     <div class="container header-layout">
-      <h1>Flashcards</h1>
-      <button id="btn-new-deck" class="btn-primary">+ New Deck</button>
+        <div class="header-left">
+        <button id="btn-menu" class="btn-icon mobile-only" aria-label="Toggle menu">☰</button>
+        <h1>Flashcards</h1>
+        </div>
+
+        <button id="btn-new-deck" class="btn-primary">+ New Deck</button>
     </div>
-  </header>
+    </header>
 
   <div class="app-layout">
     <aside class="sidebar" aria-label="Deck list">
@@ -28,9 +32,12 @@
 
     <main class="main-area" id="main">
       <div class="deck-header">
-        <div class="deck-title-actions">
+        <div class="deck-actions">
           <h2 id="current-deck-title">Biology</h2>
-          <button id="btn-delete-deck" type="button" class="btn-secondary">Delete Deck</button>
+          <div class="deck-actions-buttons">
+            <button id="btn-edit-deck" type="button" class="btn-secondary">Edit Deck</button>
+            <button id="btn-delete-deck" type="button" class="btn-secondary">Delete Deck</button>
+          </div>
         </div>
 
         <div class="toolbar">
@@ -54,8 +61,6 @@
 
         <div class="card-controls">
           <button id="btn-prev" type="button" aria-label="Previous card">← Prev</button>
-          <button id="btn-edit" type="button" class="btn-secondary">Edit</button>
-          <button id="btn-delete-card" type="button" class="btn-secondary">Delete</button>
           <button id="btn-flip" type="button">Flip</button>
           <button id="btn-next" type="button" aria-label="Next card">Next →</button>
         </div>
@@ -67,7 +72,7 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p><kbd>Space</kbd> to flip &bull; <kbd>←</kbd> <kbd>→</kbd> to navigate</p>
+      <p><kbd>Space</kbd> to flip, <kbd>←</kbd>  &bull;  <kbd>→</kbd> to navigate</p>
     </div>
   </footer>
 
